@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,59 +8,67 @@
     <link rel="stylesheet" href="./style/index.css">
 </head>
 <body>
-    <main class="main">
+    <section class="main">
         <div class="chat">
-            <div class="chat__sidebar">
-                <div class="link__profile chat__sidebar_size-m">
-                   <p class="link__profile__text">Профиль</p>
-                </div>
-                <div class="search chat__sidebar_size-m">
-                    <input type="text" class="search__input">
-                    <span class="search__icon"></span>
-                </div>
-                <div class="chat__scroll-bar chat__sidebar_size-m">
-                    <div class="user__card">
-                        <div class="card__info">
-                            <div class="card__info__left">
-                                <div class="card__info__logo"></div>
+            <aside class="chat__sidebar">
+                <ul class="sidebar__list">
+                    <li class="sidebar__item">
+                        <div class="link__profile">
+                            <span class="link__profile__text">Профиль</span>
+                        </div>
+                    </li>
+                    <li class="sidebar__item">
+                        <div class="search chat__sidebar_size-m">
+                            <input type="text" class="search__input">
+                            <span class="search__icon"></span>
+                        </div>
+                    </li>
+                    <li class="sidebar__item">
+                        <div class="chat__scroll-bar chat__sidebar_size-m">
+                            <div class="user__card">
+                                <div class="card__info">
+                                    <div class="card__info__left">
+                                        <div class="card__info__logo"></div>
+                                    </div>
+                                    <div class="card__info__right">
+                                        <span class="card__info__name">Андрей</span>
+                                        <spn class="card__info__last-msg">
+                                            <span class="card__info__last-msg-you">Вы:</span>Круто
+                                        </spn>
+                                    </div>
+                                </div>
+                                <div class="card__alert card__alert__new-msg">
+                                    <time class="card__alert__date">10:20</time>
+                                    <div class="card__alert__circle">
+                                        <span class="card__alert__number">2</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card__info__right">
-                                <p class="card__info__name">Андрей</p>
-                                <p class="card__info__last-msg">
-                                    <span class="card__info__last-msg-you">Вы:</span>Круто
-                                </p>
+                            <div class="user__card">
+                                <div class="card__info">
+                                    <div class="card__info__left">
+                                        <div class="card__info__logo"></div>
+                                    </div>
+                                    <div class="card__info__right">
+                                        <span class="card__info__name">Ivan</span>
+                                        <span class="card__info__last-msg">
+                                            <span class="card__info__last-msg-you">Вы:</span>hi
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card__alert">
+                                    <time class="card__alert__date">10:20</time>
+                                </div>
                             </div>
                         </div>
-                        <div class="card__alert card__alert__new-msg">
-                            <p class="card__alert__date">10:20</p>
-                            <div class="card__alert__circle">
-                                <span class="card__alert__number">2</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="user__card">
-                        <div class="card__info">
-                            <div class="card__info__left">
-                                <div class="card__info__logo"></div>
-                            </div>
-                            <div class="card__info__right">
-                                <p class="card__info__name">Ivan</p>
-                                <p class="card__info__last-msg">
-                                    <span class="card__info__last-msg-you">Вы:</span>hi
-                                </p>
-                            </div>
-                        </div>
-                        <div class="card__alert">
-                            <p class="card__alert__date">10:20</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="chat__body chat__body-empty">
+                    </li>
+                </ul>
+            </aside>
+            <main class="chat__body chat__body-empty">
                 <p class="chat__body__text-empty">Выберите чат чтобы отправить сообщение</p>
-            </div>
+            </main>
         </div>
-    </main>
+    </section>
     
 </body>
 </html>
