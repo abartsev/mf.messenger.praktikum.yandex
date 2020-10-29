@@ -9,7 +9,7 @@ export const form_template = (function () {
                     {{for_tmpl}}
                         <div class="form__item">
                             <label class="form__item__label" for="{{field_name}}">{{name}}</label>
-                            <input oninput={{onChange}} value="{{value}}" class="form__item__input" type="{{field_type}}" name="{{field_name}}" >
+                            <input onblur={{onBlur}} value="{{value}}" class="form__item__input {{className}}" type="{{field_type}}" name="{{field_name}}" >
                         </div>
                     {{/for_tmpl}}
                 </div>

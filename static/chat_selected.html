@@ -9,111 +9,11 @@
 </head>
 <body>
     <section class="main">
-        <div class="chat">
-            <aside class="chat__sidebar">
-                    <div class="sidebar__item">
-                        <div class="link__profile">
-                            <span class="link__profile__text">Профиль</span>
-                        </div>
-                    </div>
-                    <div class="sidebar__item">
-                        <div class="search">
-                            <input type="text" class="search__input">
-                            <span class="search__icon"></span>
-                        </div>
-                    </div>
-                    <div class="sidebar__item">
-                        <ul class="chats__list">
-                            <li class="user__card user__card-active">
-                                <div class="card__info">
-                                    <div class="card__info__left">
-                                        <div class="card__info__logo"></div>
-                                    </div>
-                                    <div class="card__info__right">
-                                        <span class="card__info__name">Андрей</span>
-                                        <div class="card__info__last-msg">
-                                            <span class="card__info__last-msg-you">Вы:</span>Круто
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card__alert card__alert__new-msg">
-                                    <time class="card__alert__date">10:20</time>
-                                    <div class="card__alert__circle">
-                                        <span class="card__alert__number">2</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="user__card">
-                                <div class="card__info">
-                                    <div class="card__info__left">
-                                        <div class="card__info__logo"></div>
-                                    </div>
-                                    <div class="card__info__right">
-                                        <span class="card__info__name">Ivan</span>
-                                        <div class="card__info__last-msg">
-                                            <span class="card__info__last-msg-you">Вы:</span>hi
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card__alert">
-                                    <time class="card__alert__date">10:20</time>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-            </aside>
-            <main class="chat__body chat__body-active">
-                <div class="chat__header chat__card-user">
-                    <div class="card__info">
-                        <div class="card__info__left">
-                            <div class="card__info__logo"></div>
-                        </div>
-                        <div class="card__info__right">
-                            <span class="card__info__name">Андрей</span>
-                            <span class="card__info__last-msg">
-                                Был 5 мин назад
-                            </span>
-                        </div>
-                    </div>
-                    <div class="card__info">
-                        <div class="left__menu">
-                            <ul class="menu__modal left__menu__active">
-                                <li class="menu__item"><span class="menu__icon menu__icon-writing"></span> Переименовать</li>
-                                <li class="menu__item"><span class="menu__icon menu__icon-delete"></span> Удалить</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="chat__msg">
-                    <div class="user__msg-block">
-                        <div class="user__msg">
-                            <p class="msg__text">Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой.
-                            Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.</p>
-                            <time class="msg__date">10:15</time>
-                        </div>
-                    </div>
-                    <div class="own__msg-block">
-                        <div class="own__msg">
-                            <p class="msg__text">Круто!</p>
-                            <time class="msg__date">10:15</time>
-                        </div>
-                    </div>
-                </div>
-                <div class="chat__footer">
-                    <div class="footer__attach">
-                        <div class="attach__menu">
-                            <ul class="menu__modal attach__menu__active">
-                                <li class="menu__item"><span class="menu__icon menu__icon-image"></span> Фото или Видео</li>
-                                <li class="menu__item"><span class="menu__icon menu__icon-newfile"></span> Файл</li>
-                                <li class="menu__item"><span class="menu__icon menu__icon-dot"></span> Локация</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <input class="footer__input" type="text" placeholder="Сообщение">
-                    <button class="circle__btn circle__btn_type_right"></button>
-                </div>
-            </main>
-        </div>
+        <div class="chat"></div>
     </section>
+    <script type="module" src='./js/components/chat/chat-aside.js'></script>
+    <script type="module" src='./js/components/chat/chat-main-select-header.js'></script>
+    <script type="module" src='./js/components/chat/chat-main-select-msg.js'></script>
+    <script type="module" src='./js/components/chat/chat-main-select-footer.js'></script>
 </body>
 </html>
