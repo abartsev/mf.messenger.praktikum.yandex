@@ -1,39 +1,63 @@
-import { Block, IBlock } from '../../template/block.js';
-import { form_template } from './form.tmpl.js';
+import { Block, IBlock } from '../../lib/block.js';
 import { IContext } from '../interface.js';
+import { ValidateForm } from '../helper/validate-form.js';
 
 export class Form extends Block {
 
     props: IContext;
-    constructor(props: IContext) {
-        super("div", props);
+    validateForm: {[index: string]: IBlock} = {};
+    temp: string;
+    _root: HTMLElement;
+    constructor(props: IContext, template: string) {
+        super("div", ['layout_type_modal'], props, template);
+        this.temp = template;
+    }
+
+    componentDidMount () {
+        Object.keys(this.props).forEach((e: string) => {
+            if (e.includes('submit')) {
+                const field: HTMLInputElement | null  = document.querySelector(`.${e}`);
+                
+                if (field) {
+                    field.addEventListener("submit", this.handleSubmit);
+                } 
+            } else {
+                const field: HTMLInputElement | null  = document.querySelector(`.${e}`);
+                if (field) {
+                    this.validateForm[e] = new ValidateForm({text: ""});
+                    field.after(this.validateForm[e].element);
+                    field.addEventListener("blur", this.handleBlur);
+                } 
+            }
+            
+        })  
+    }
+
+    handleSubmit = (e: HTMLFormElement | any): void => {
+       e.preventDefault();
+       Array.from(e.target.elements).forEach((elem: HTMLInputElement) => {
+        if (elem.name && !elem.value) {
+            this.validateForm[elem.name].setProps({text: 'Поле обязательно для заполнения'});
+        } else if (elem.name && elem.value) {
+            this.validateForm[elem.name].setProps({text: ''});
+        }
+    })
+    }
+
+    handleBlur = (e: {target: any}): void => {
+        if (!e.target.value) {
+            this.validateForm[e.target.name].setProps({text: 'Поле обязательно для заполнения'});
+        } else {
+            this.validateForm[e.target.name].setProps({text: ''});
+        }
     }
 
     render() {
-        // В проект должен быть ваш собственный шаблонизатор
-        return form_template;
+        if (!this._root) {
+            this._root = document.querySelector('.main') as HTMLElement; 
+            this._root.appendChild(this.getContent());
+        }
+
+        return this._template;
     }
 }
-
-function render(query: string, block: IBlock) {
-    const root = document.querySelector(query) as HTMLElement;
-    root.appendChild(block.getContent());
-    return root;
-  }
-
-  const context: IContext = {
-    class_name: 'layout_type_modal',
-    title: 'Вход',
-    for_tmpl: [
-        {name: 'Почта', field_name: 'email', field_type: 'type', value: '', onChange: `"(e)=>{console.log(e, this)}"`}, 
-        {name: 'Пароль', field_name: 'password', field_type: 'password', value: '', onChange: `"(e)=>{console.log(e, this)}"`}
-    ],
-    link_href: '/signin.html',
-    link_text: 'Нет аккаунта?',
-    btn_name: 'Авторизоваться',
-    
-}
-  
-  const form = new Form(context);
-  
-  render(".app", form);

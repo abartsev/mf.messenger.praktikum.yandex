@@ -9,64 +9,9 @@
 </head>
 <body>
     <section class="main">
-        <div class="chat">
-            <aside class="chat__sidebar">
-                    <div class="sidebar__item">
-                        <div class="link__profile">
-                            <span class="link__profile__text">Профиль</span>
-                        </div>
-                    </div>
-                    <div class="sidebar__item">
-                        <div class="search">
-                            <input type="text" class="search__input">
-                            <span class="search__icon"></span>
-                        </div>
-                    </div>
-                    <div class="sidebar__item">
-                        <ul class="chats__list">
-                            <li class="user__card">
-                                <div class="card__info">
-                                    <div class="card__info__left">
-                                        <div class="card__info__logo"></div>
-                                    </div>
-                                    <div class="card__info__right">
-                                        <span class="card__info__name">Андрей</span>
-                                        <div class="card__info__last-msg">
-                                            <span class="card__info__last-msg-you">Вы:</span>Круто
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card__alert card__alert__new-msg">
-                                    <time class="card__alert__date">10:20</time>
-                                    <div class="card__alert__circle">
-                                        <span class="card__alert__number">2</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="user__card">
-                                <div class="card__info">
-                                    <div class="card__info__left">
-                                        <div class="card__info__logo"></div>
-                                    </div>
-                                    <div class="card__info__right">
-                                        <span class="card__info__name">Ivan</span>
-                                        <span class="card__info__last-msg">
-                                            <span class="card__info__last-msg-you">Вы:</span>hi
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="card__alert">
-                                    <time class="card__alert__date">10:20</time>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-            </aside>
-            <main class="chat__body chat__body-empty">
-                <p class="chat__body__text-empty">Выберите чат чтобы отправить сообщение</p>
-            </main>
-        </div>
+        <div class="chat"></div>
     </section>
-    
+    <script type="module" src='./js/components/chat/chat-aside.js'></script>
+    <script type="module" src='./js/components/chat/chat-main-empty.js'></script>
 </body>
 </html>

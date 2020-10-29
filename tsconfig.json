@@ -7,6 +7,9 @@
         "sourceMap": true,
         "declaration": false,
         "strictNullChecks": true,
-        "outDir": "./static/js"
+        "outDir": "./static/js",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "alwaysStrict": true,
     },
 }
