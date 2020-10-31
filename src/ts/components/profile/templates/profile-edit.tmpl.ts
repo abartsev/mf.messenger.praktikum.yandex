@@ -27,7 +27,7 @@ export const profileEditTemplate = `
                 </div>
             </div>
             <div class="profile__form__footer profile__edit__form__footer ">
-                <button type="button" class="btn profile__form__footer__btn_type_save save_onclick">Сохранить</button>
+                {{Button}}
             </div>
         </form>
     </div>
