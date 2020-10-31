@@ -23,7 +23,7 @@ export const signinTemplate = `
         </div>
         <div class="form__items form__footer">
             <div class="form__item">
-                <button class="form__item__button" type="submit">Зарегистрироваться</button>
+                {{Button}}
             </div>
             <div class="form__item">
                 <a class="form__item__link" href="/login.html">Войти</a>

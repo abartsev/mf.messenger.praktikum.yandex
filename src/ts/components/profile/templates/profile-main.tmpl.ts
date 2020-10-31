@@ -19,8 +19,8 @@ export const profileTemplate = `
                 </div>
             </div>
             <div class="profile__form__footer">
-                <button type="button" class="btn__link profile__form__footer__btn edit_onclick">Изменить данные</button>
-                <button type="button" class="btn__link profile__form__footer__btn btn__link_color_red exit_onclick">Выйти</button>
+                {{ButtonEdit}}
+                {{ButtonExit}}
             </div>
         </div>
     </div>

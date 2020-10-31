@@ -15,7 +15,7 @@ export const loginTemplate = `
         </div>
         <div class="form__items form__footer">
             <div class="form__item">
-                <button class="form__item__button" type="submit">Авторизоваться</button>
+                {{Button}}
             </div>
             <div class="form__item">
                 <a class="form__item__link" href="/signin.html">Нет аккаунта?</a>

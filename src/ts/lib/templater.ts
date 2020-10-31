@@ -43,7 +43,12 @@ export class Templator implements ITemplator {
                     }, []).join('')
                     this._template = for_tmpl.join('');                   
                 } else {   
-                    const data = this.get(ctx, tmplValue);
+                    let data = this.get(ctx, tmplValue);
+                    if (typeof data === 'object') {
+                        let el = document.createElement('div');
+                        el.appendChild(data._element);
+                        data = el.innerHTML;
+                    }
                     
                     this._template = this._template.replace(new RegExp(key[0], "gi"), data);
                 }
