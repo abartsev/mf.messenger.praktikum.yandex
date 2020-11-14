@@ -1,4 +1,4 @@
-import { IContext } from '../interface.js';
+import { IContext } from '../types.js';
 import { ErrorPage } from './error-page.js';
 import { errorPageTemplate } from './templates/error-page.tmpl.js';
 

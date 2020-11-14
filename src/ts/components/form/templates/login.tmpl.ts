@@ -18,7 +18,7 @@ export const loginTemplate = `
                 {{Button}}
             </div>
             <div class="form__item">
-                <a class="form__item__link" href="/signin.html">Нет аккаунта?</a>
+                {{Link}}
             </div>
         </div>
     </form>

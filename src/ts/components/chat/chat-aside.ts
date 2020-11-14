@@ -1,4 +1,4 @@
-import { IContext } from '../interface.js';
+import { IContext } from '../types.js';
 import { Chat } from './chat.js';
 import { chatAsideTemplate } from './templates/chat-aside.tmpl.js';
 

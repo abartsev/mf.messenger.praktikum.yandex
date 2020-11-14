@@ -1,5 +1,5 @@
 import { Button } from './../common/button/button.js';
-import { IContext } from '../interface.js';
+import { IContext } from '../types.js';
 import { Profile } from './profile.js';
 import { profileEditTemplate } from './templates/profile-edit.tmpl.js';
 

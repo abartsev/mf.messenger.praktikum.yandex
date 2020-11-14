@@ -1,6 +1,6 @@
 import { EventBus, IEventBus } from './event-bus.js';
 import { Templator, ITemplator } from './templater.js'
-import { IContext } from '../components/interface.js';
+import { IContext } from '../components/types.js';
 
 export interface IBlock {
   getContent: () => HTMLElement,
@@ -8,7 +8,8 @@ export interface IBlock {
   _element: HTMLElement,
   setProps: (props: {}) => void,
   show: () => void,
-  hide: () => void
+  hide: () => void,
+  _saveHistory: (arr: any) => void
 }
 
 export class Block {
@@ -24,7 +25,9 @@ export class Block {
     eventBus: IEventBus;
     templator: ITemplator;
     props: IContext;
+    _history: any;
     _template: string;
+    _assembledTemplate: string;
     _module: boolean;
     constructor(tagName = "div", className: string[], props: IContext, template: string = '', module?: boolean) {
         this.eventBus = new EventBus();
@@ -41,7 +44,6 @@ export class Block {
         this._registerEvents(this.eventBus);
         this.eventBus.emit(Block.EVENTS.INIT);
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
-        setTimeout(() => this.eventBus.emit(Block.EVENTS.FLOW_CDM), 0);
     }
   
     _registerEvents (eventBus: IEventBus) {
@@ -52,6 +54,7 @@ export class Block {
     }
   
     _createResources () {
+
       const { tagName, className } = this._meta;
       
       if (document.querySelector(`.${className.join('.')}`)) {
@@ -62,7 +65,6 @@ export class Block {
           className.forEach(e => this._element.classList.add(e));
         }
       }
-      
     }
   
     init() {
@@ -71,6 +73,13 @@ export class Block {
   
     _componentDidMount() {
       return this.componentDidMount(this.props)
+    }
+
+    _saveHistory (history: any) {
+      if (this.props.Link) {
+        this.props.Link = history
+      }
+      this._history = history;
     }
   
     // Может переопределять пользователь, необязательно трогать
@@ -112,14 +121,13 @@ export class Block {
   
     _render() {
       const block: any = this.render();
-      let mapTag: string = '';
-      
       this.templator = new Templator(block);
+      this._assembledTemplate = this.templator.compile(this.props);
+      let mapTag: string = '';
       if (this._module) {
         mapTag = this._element.innerHTML;
       }
-      this._element.innerHTML = mapTag + this.templator.compile(this.props);
-      
+      this._element.innerHTML = mapTag + this._assembledTemplate;
     }
 
     render() { }
@@ -131,13 +139,17 @@ export class Block {
     _makePropsProxy(props: IContext) {
       
       return new Proxy(props, {
-        set: (target: IContext, prop: string, val: string) => {
+        set: (target: IContext, prop: string, val: any) => {
           if (prop.startsWith("_")) {
             throw new Error("Отказано в доступе");
           } else {
             const prevProps: IContext = { ...target };
-            target[prop] = val
-            this.eventBus.emit(Block.EVENTS.FLOW_CDU, prevProps, target);
+            if (prop === 'Link') {
+              target[prop]._history = val;
+            } else {
+              target[prop] = val;
+              this.eventBus.emit(Block.EVENTS.FLOW_CDU, prevProps, target);
+            }
             return true;
           }
         },
@@ -157,11 +169,13 @@ export class Block {
     }
   
     show() {
-      this._element.classList.add('active');
+        const _root = document.querySelector('.app') as HTMLElement; 
+        _root.appendChild(this.getContent());
+        this.eventBus.emit(Block.EVENTS.FLOW_CDM);
     }
   
     hide() {
-      this._element.classList.remove('active');
+      this._element.remove();
     }
   }
   

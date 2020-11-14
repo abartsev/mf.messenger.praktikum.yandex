@@ -1,5 +1,5 @@
 import { Button } from './../common/button/button.js';
-import { IContext } from '../interface.js';
+import { IContext } from '../types.js';
 import { Chat } from './chat.js';
 import { chatDeleteTemplate } from './templates/chat-delete.tmpl.js';
 

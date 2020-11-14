@@ -1,5 +1,5 @@
 import { Block, IBlock } from '../../lib/block.js';
-import { IContext } from '../interface.js';
+import { IContext } from '../types.js';
 
 export class ErrorPage extends Block {
 

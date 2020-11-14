@@ -26,7 +26,7 @@ export const signinTemplate = `
                 {{Button}}
             </div>
             <div class="form__item">
-                <a class="form__item__link" href="/login.html">Войти</a>
+                {{Link}}
             </div>
         </div>
     </form>

@@ -1,5 +1,6 @@
+import { Router, IRouter } from './../../lib/router/router.js';
 import { Block, IBlock } from '../../lib/block.js';
-import { IContext } from '../interface.js';
+import { IContext } from '../types.js';
 import { ValidateForm } from '../helper/validate-form.js';
 
 export class Form extends Block {
@@ -7,22 +8,25 @@ export class Form extends Block {
     props: IContext;
     validateForm: {[index: string]: IBlock} = {};
     temp: string;
+    router: IRouter;
     _root: HTMLElement;
     constructor(props: IContext, template: string) {
         super('div', ['layout_type_modal'], props, template);
         this.temp = template;
+        this.router = new Router('.app'); 
     }
 
     componentDidMount () {
-        
         Object.keys(this.props).forEach((e: string) => {
+          
             const field: HTMLInputElement | null  = document.querySelector(`.${e}`);
+  
             if (field) {
                 if (e.includes('submit')) {
                     field.addEventListener('submit', this.handleSubmit);
                 } else {
                     this.validateForm[e] = new ValidateForm({text: ""});
-                    setTimeout(()=>field.after(this.validateForm[e].element), 0);
+                    field.after(this.validateForm[e].element);
                     field.addEventListener('blur', this.handleBlur);
                 }
             }           
@@ -49,11 +53,6 @@ export class Form extends Block {
     }
 
     render() {
-        if (!this._root) {
-            this._root = document.querySelector('.main') as HTMLElement; 
-            this._root.appendChild(this.getContent());
-        }
-
         return this._template;
     }
 }

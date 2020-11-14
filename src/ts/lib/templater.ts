@@ -1,4 +1,4 @@
-import { IContext } from '../components/interface.js';
+import { IContext } from '../components/types.js';
 import { TEMPLATE_REGEXP, FOR_TEMPLATE } from '../constants.js';
 
 export interface ITemplator {
@@ -23,7 +23,7 @@ export class Templator implements ITemplator {
         while ((key = TEMPLATE_REGEXP.exec(this._template))) {
             if (key[1]) {
                 const tmplValue: string = key[1].trim();
-              
+
                 if (tmplValue === 'for_each') {
                     const data = this.get(ctx, tmplValue);
                     
@@ -44,6 +44,7 @@ export class Templator implements ITemplator {
                     this._template = for_tmpl.join('');                   
                 } else {   
                     let data = this.get(ctx, tmplValue);
+
                     if (typeof data === 'object') {
                         let el = document.createElement('div');
                         el.appendChild(data._element);

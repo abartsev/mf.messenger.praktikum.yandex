@@ -20,7 +20,6 @@ export class Block {
         this._registerEvents(this.eventBus);
         this.eventBus.emit(Block.EVENTS.INIT);
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
-        setTimeout(() => this.eventBus.emit(Block.EVENTS.FLOW_CDM), 0);
     }
     _registerEvents(eventBus) {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
@@ -46,6 +45,12 @@ export class Block {
     _componentDidMount() {
         return this.componentDidMount(this.props);
     }
+    _saveHistory(history) {
+        if (this.props.Link) {
+            this.props.Link = history;
+        }
+        this._history = history;
+    }
     // Может переопределять пользователь, необязательно трогать
     componentDidMount(oldProps) {
     }
@@ -69,12 +74,13 @@ export class Block {
     }
     _render() {
         const block = this.render();
-        let mapTag = '';
         this.templator = new Templator(block);
+        this._assembledTemplate = this.templator.compile(this.props);
+        let mapTag = '';
         if (this._module) {
             mapTag = this._element.innerHTML;
         }
-        this._element.innerHTML = mapTag + this.templator.compile(this.props);
+        this._element.innerHTML = mapTag + this._assembledTemplate;
     }
     render() { }
     getContent() {
@@ -88,8 +94,13 @@ export class Block {
                 }
                 else {
                     const prevProps = Object.assign({}, target);
-                    target[prop] = val;
-                    this.eventBus.emit(Block.EVENTS.FLOW_CDU, prevProps, target);
+                    if (prop === 'Link') {
+                        target[prop]._history = val;
+                    }
+                    else {
+                        target[prop] = val;
+                        this.eventBus.emit(Block.EVENTS.FLOW_CDU, prevProps, target);
+                    }
                     return true;
                 }
             },
@@ -108,10 +119,12 @@ export class Block {
         return document.createElement(tagName);
     }
     show() {
-        this._element.classList.add('active');
+        const _root = document.querySelector('.app');
+        _root.appendChild(this.getContent());
+        this.eventBus.emit(Block.EVENTS.FLOW_CDM);
     }
     hide() {
-        this._element.classList.remove('active');
+        this._element.remove();
     }
 }
 Block.EVENTS = {
