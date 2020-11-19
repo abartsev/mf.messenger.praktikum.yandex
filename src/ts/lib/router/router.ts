@@ -22,7 +22,7 @@ export class Router implements IRouter {
         this.history = window.history;
         this._currentRoute = null;
         this._rootQuery = rootQuery;
-        this.__instance = this;
+        this.routes = store;
     }
 
     use(pathname: string, block: IBlock) {
