@@ -1,5 +1,6 @@
-import { Block } from '../../lib/block.js';
-import { ValidateForm } from '../helper/validate-form.js';
+import { Router } from './../../lib/router/router.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { Block } from '../../lib/block.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { ValidateForm } from '../helper/validate-form.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
 export class Form extends Block {
     constructor(props, template) {
         super('div', ['layout_type_modal'], props, template);
@@ -24,6 +25,7 @@ export class Form extends Block {
             }
         };
         this.temp = template;
+        this.router = new Router('.app');
     }
     componentDidMount() {
         Object.keys(this.props).forEach((e) => {
@@ -34,17 +36,13 @@ export class Form extends Block {
                 }
                 else {
                     this.validateForm[e] = new ValidateForm({ text: "" });
-                    setTimeout(() => field.after(this.validateForm[e].element), 0);
+                    field.after(this.validateForm[e].element);
                     field.addEventListener('blur', this.handleBlur);
                 }
             }
         });
     }
     render() {
-        if (!this._root) {
-            this._root = document.querySelector('.main');
-            this._root.appendChild(this.getContent());
-        }
         return this._template;
     }
 }

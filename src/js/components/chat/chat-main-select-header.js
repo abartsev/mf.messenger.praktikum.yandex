@@ -1,5 +1,5 @@
-import { Chat } from './chat.js';
-import { chatMainSelectHeaderTemplate } from './templates/chat-main-select-heder.tmpl.js';
+import { Chat } from './chat.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { chatMainSelectHeaderTemplate } from './templates/chat-main-select-heder.tmpl.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
 const context = {
     name: 'Андрей',
     on_line: 'был 5 минут назад'

@@ -1,5 +1,5 @@
-import { Chat } from './chat.js';
-import { chatMainSelectMsgTemplate } from './templates/chat-main-select-msg.tmpl.js';
+import { Chat } from './chat.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { chatMainSelectMsgTemplate } from './templates/chat-main-select-msg.tmpl.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
 const context = {
     for_each: [{
             className: 'user',

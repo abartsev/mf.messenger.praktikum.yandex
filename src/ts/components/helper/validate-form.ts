@@ -1,15 +1,20 @@
-import { Block } from '../../lib/block.js';
-import { IContext } from '../interface.js';
+import { Block } from '../../lib/block';
+import { Context } from '../types';
 
 export class ValidateForm extends Block {
 
-    props: IContext;
-    constructor(props: IContext) {
-        super('span', ['error_msg'] ,props);
+    props: Context;
+    constructor(props: Context) {
+        super(props);
+        return this;
     }
 
     render() {
-        return '{{text}}';
+        return {
+            tag: 'span',
+            class: 'error_msg',
+            text: this.props.text
+        };
     }
 }
 

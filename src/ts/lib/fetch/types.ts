@@ -1,0 +1,2 @@
+export type Data = {[index: string]: string | {} | [] | number };
+export type Options = {data?: string | {[index: string]: string | []} | null, getParam?: {} | null, timeout?: number | null, method?: string, headers?: {}};
