@@ -1,28 +1,19 @@
-import { Block } from '../../../lib/block.js';
-import { IContext } from '../../types.js';
-import { Router, IRouter } from '../../../lib/router/router.js';
-
+import { Block } from '../../../lib/block';
+import { Context } from '../../types';
 export class Link extends Block {
 
-    props: IContext;
-    router: IRouter;
-    constructor(tag: string, className: string[], props: IContext) {
-        super(tag, className, props);
-
-        this.router = new Router('.app'); 
-        this._element.addEventListener('click', () => {
-            console.log('dededed');
-            this.handleClick('/')
-          })
+    props: Context;
+    _onClick: () => void;
+    constructor(props: Context) {
+        super(props);
     }
  
-    handleClick = (props: string) => (e: {preventDefault: ()=>void}): void => {
-        e.preventDefault();
-        console.log(e);
-        this.router.go(props, this._history);
-    }
-
-    render() {
-        return '{{text}}';
+    render () {
+        return {
+            tag: 'a',
+            class: this.props.className,
+            text: this.props.text,
+            attr: this.props.attr
+        };
     }
 }

@@ -9,7 +9,9 @@ export const isEqual = (a: {[index: string]: any}| string, b: {[index: string]: 
             if (typeof a[key] === 'object' && typeof b[key] === 'object') {
               arrRes.push(isEqual(a[key], b[key]));
             } else {
-              if (a[key] === b[key]) {
+              if (!b[key]) {
+                arrRes.push(false);
+              } else if (a[key] === b[key]) {
                 arrRes.push(true);
               } else {
                 arrRes.push(false); 

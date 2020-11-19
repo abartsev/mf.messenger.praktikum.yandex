@@ -1,6 +1,6 @@
-import { Router } from './../../lib/router/router.js';
-import { Block } from '../../lib/block.js';
-import { ValidateForm } from '../helper/validate-form.js';
+import { Router } from './../../lib/router/router.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { Block } from '../../lib/block.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { ValidateForm } from '../helper/validate-form.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
 export class Form extends Block {
     constructor(props, template) {
         super('div', ['layout_type_modal'], props, template);

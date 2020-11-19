@@ -1,6 +1,13 @@
 import { Route } from './route.js';
 export class Router {
-    constructor(rootQuery) {
+    constructor(rootQuery, store) {
+        this.listen = () => {
+            clearInterval(this.interval);
+            this.interval = setInterval(this._interval, 100);
+        };
+        this._interval = () => {
+            this._currentRoute = this.getRoute(window.location.pathname);
+        };
         if (this.__instance) {
             return this.__instance;
         }
@@ -9,12 +16,12 @@ export class Router {
         this._currentRoute = null;
         this._rootQuery = rootQuery;
         this.__instance = this;
+        this.routes = store;
+        this.listen();
     }
     use(pathname, block) {
         const route = new Route(pathname, block, { rootQuery: this._rootQuery });
-        this.routes.push(route);
-        console.log(route._block);
-        route._block._saveHistory(this.routes);
+        this._setHistory(route);
         return this;
     }
     start() {
@@ -24,20 +31,22 @@ export class Router {
         this._onRoute(window.location.pathname);
     }
     _onRoute(pathname) {
-        console.log(this._currentRoute, window.location.pathname);
-        const route = this.getRoute(pathname);
         if (this._currentRoute) {
             this._currentRoute.leave();
         }
-        route && route.render(route._block, pathname);
+        const route = this.getRoute(pathname);
+        route && route.render(route._block);
     }
-    go(pathname, routs) {
-        if (!this.routes.length) {
-            this.routes = routs;
-        }
+    go(pathname) {
         this._currentRoute = this.getRoute(window.location.pathname);
-        this.history.pushState({}, "", pathname);
+        this.history.pushState({}, "page", pathname);
         this._onRoute(pathname);
+    }
+    _setHistory(route) {
+        this.routes.push(route);
+    }
+    _getHistory() {
+        return this.routes;
     }
     back() {
         window.history.back();
@@ -46,7 +55,12 @@ export class Router {
         window.history.forward();
     }
     getRoute(pathname) {
-        return this.routes.find(route => route.match(pathname));
+        let routes = this._getHistory();
+        pathname = pathname.replace(/\d+/gm, ':id');
+        console.log(pathname);
+        if (routes) {
+            return routes.find(route => route.match(pathname));
+        }
     }
 }
 //# sourceMappingURL=router.js.map

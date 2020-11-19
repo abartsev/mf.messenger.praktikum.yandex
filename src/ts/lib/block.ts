@@ -1,110 +1,68 @@
-import { EventBus, IEventBus } from './event-bus.js';
-import { Templator, ITemplator } from './templater.js'
-import { IContext } from '../components/types.js';
+import { EventBus, IEventBus } from './event-bus';
+import { Templator, ITemplator } from './templater'
+import { Context } from '../components/types';
+import { isEqual } from './helpers';
 
 export interface IBlock {
   getContent: () => HTMLElement,
+  props: Context,
   element: HTMLElement,
   _element: HTMLElement,
   setProps: (props: {}) => void,
   show: () => void,
   hide: () => void,
-  _saveHistory: (arr: any) => void
+  _componentDidUpdate: (newProps: {[key: string]: []}, oldProps?: {[key: string]: []})=>void
 }
 
 export class Block {
     static EVENTS = {
-      INIT: "init",
       FLOW_CDM: "flow:component-did-mount",
       FLOW_CDU: "flow:component-did-update",
       FLOW_RENDER: "flow:render"
     };
   
     _element: HTMLElement;
-    _meta: {tagName: string, className: string[], props: {}};
+    _meta: {tagName: string, className: string[]};
     eventBus: IEventBus;
     templator: ITemplator;
-    props: IContext;
-    _history: any;
-    _template: string;
-    _assembledTemplate: string;
-    _module: boolean;
-    constructor(tagName = "div", className: string[], props: IContext, template: string = '', module?: boolean) {
-        this.eventBus = new EventBus();
+    props: Context;
 
-        this._meta = {
-            tagName,
-            className,
-            props
-        };
-        this._module = module || false;
-        this._template = template;
+    constructor(props: Context) {
+        this.eventBus = new EventBus();
+        this.templator = new Templator();
         this.props = this._makePropsProxy(props);
-    
         this._registerEvents(this.eventBus);
-        this.eventBus.emit(Block.EVENTS.INIT);
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
     }
   
     _registerEvents (eventBus: IEventBus) {
-      eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
       eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
       eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
       eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
   
-    _createResources () {
-
-      const { tagName, className } = this._meta;
-      
-      if (document.querySelector(`.${className.join('.')}`)) {
-        this._element = document.querySelector(`.${className.join('.')}`) as HTMLElement;
-      } else {
-        this._element = this._createDocumentElement(tagName);
-        if (className) {
-          className.forEach(e => this._element.classList.add(e));
-        }
-      }
-    }
-  
-    init() {
-      this._createResources();
-    }
-  
     _componentDidMount() {
-      return this.componentDidMount(this.props)
-    }
-
-    _saveHistory (history: any) {
-      if (this.props.Link) {
-        this.props.Link = history
-      }
-      this._history = history;
+      return this.componentDidMount(this.props);
     }
   
     // Может переопределять пользователь, необязательно трогать
     componentDidMount(oldProps: {}): void {
-      
+      console.log(oldProps);
     }
   
-    _componentDidUpdate(oldProps: {}, newProps: {}) {
+    _componentDidUpdate(newProps: {}, oldProps?: {}) {
+      if (!oldProps) {
+        oldProps = this.props;
+      }
       const response = this.componentDidUpdate(oldProps, newProps);
   
-      if (response) {
+      if (!response) {
         this._render();
       }
     }
   
     componentDidUpdate(oldProps: {[key: string]: []}, newProps: {[key: string]: []}) {
-      const map: boolean[] = [];
-
-      if (oldProps && newProps) {
-        Object.keys(oldProps).forEach((e) => {
-          map.push(oldProps[e] !== newProps[e]);
-        });
-      }
-
-      return map.includes(true);
+      return isEqual(oldProps, newProps);
     }
   
     setProps = (nextProps: {}) => {
@@ -119,41 +77,24 @@ export class Block {
       return this._element;
     }
   
-    _render() {
-      const block: any = this.render();
-      this.templator = new Templator(block);
-      this._assembledTemplate = this.templator.compile(this.props);
-      let mapTag: string = '';
-      if (this._module) {
-        mapTag = this._element.innerHTML;
-      }
-      this._element.innerHTML = mapTag + this._assembledTemplate;
-    }
-
-    render() { }
-  
     getContent() {
       return this.element;
     }
   
-    _makePropsProxy(props: IContext) {
-      
+    _makePropsProxy = (props: Context) => {
+
       return new Proxy(props, {
-        set: (target: IContext, prop: string, val: any) => {
+        set: (target: Context, prop: string, val: any) => {
           if (prop.startsWith("_")) {
             throw new Error("Отказано в доступе");
           } else {
-            const prevProps: IContext = { ...target };
-            if (prop === 'Link') {
-              target[prop]._history = val;
-            } else {
+            const prevProps: Context = { ...target };
               target[prop] = val;
-              this.eventBus.emit(Block.EVENTS.FLOW_CDU, prevProps, target);
-            }
+              this.eventBus.emit(Block.EVENTS.FLOW_CDU, target, prevProps);
             return true;
           }
         },
-        get:<T extends IContext,>(target: T, prop: string) => {
+        get:<T extends Context,>(target: T, prop: string) => {
           if (prop.startsWith("_")) {
             throw new Error("Отказано в доступе");
           } else {
@@ -162,20 +103,35 @@ export class Block {
         }
       });
     }
-  
-    _createDocumentElement(tagName: string): HTMLElement {
-      // Можно сделать метод, который через фрагменты в цикле создаёт сразу несколько блоков
-      return document.createElement(tagName);
+
+    _render() {
+      const block: any = this.render(); 
+      let flag: boolean = false;
+      if (this._element) {
+        flag = true;
+        this._element.remove();
+      }
+      
+      this._element = this.templator.compile(block, this.props);
+      if (flag) {
+        this.show();
+        flag = false;
+      }
     }
+
+    render(){}
   
     show() {
         const _root = document.querySelector('.app') as HTMLElement; 
-        _root.appendChild(this.getContent());
-        this.eventBus.emit(Block.EVENTS.FLOW_CDM);
+        if (this._element) {
+          _root.appendChild(this._element);
+        }
+        setTimeout(() => this.eventBus.emit(Block.EVENTS.FLOW_CDM), 0);
     }
   
     hide() {
-      this._element.remove();
+      const delElem = document.querySelector(`.${this._element.className}`) as HTMLElement; 
+      delElem.remove();
     }
   }
   

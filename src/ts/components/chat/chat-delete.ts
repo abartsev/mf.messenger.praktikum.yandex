@@ -1,13 +1,28 @@
-import { Button } from './../common/button/button.js';
-import { IContext } from '../types.js';
-import { Chat } from './chat.js';
-import { chatDeleteTemplate } from './templates/chat-delete.tmpl.js';
+import { Button } from './../common/button/button';
+import { Block } from './../../lib/block';
 
-const context: IContext = {
-    delete_onclick: '',
-    cancel_onclick: '',
-    ButtonDelete: new Button(['btn', 'btn_type_delete', 'modal__footer__btn', 'delete_onclick'], {text: 'Удалит'}),
-    ButtonCancel: new Button(['btn', 'btn_type_cancel', 'modal__footer__btn', 'cancel_onclick'], {text: 'Отменить'})
+export class ChatDelete extends Block {
+    constructor () {
+        super({});
+    }
+
+    render() {
+        return {
+            tag: 'div',
+            class: 'modal,modal__delete',
+            children: [
+                {
+                    tag: 'h3',
+                    class: 'modal__title',
+                    text: 'Вы хотите удалить чат'
+                },
+                {
+                    tag: 'div',
+                    class: 'modal__footer',
+                    childNode_0: new Button({className: 'btn,btn_type_delete,modal__footer__btn', text: 'Удалит', attr: {onDelete: 'onDelete'}}),
+                    childNode_1: new Button({className: 'btn,btn_type_cancel,modal__footer__btn', text: 'Отменить', attr: {onCancel: 'onCancel'}})
+                }
+            ]
+        }
+    }
 }
-  
-new Chat('div', ['layout_type_modal', 'layout_bg_gray'], context, chatDeleteTemplate);

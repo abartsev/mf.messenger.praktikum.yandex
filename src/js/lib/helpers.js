@@ -9,7 +9,10 @@ export const isEqual = (a, b) => {
                 arrRes.push(isEqual(a[key], b[key]));
             }
             else {
-                if (a[key] === b[key]) {
+                if (!b[key]) {
+                    arrRes.push(false);
+                }
+                else if (a[key] === b[key]) {
                     arrRes.push(true);
                 }
                 else {

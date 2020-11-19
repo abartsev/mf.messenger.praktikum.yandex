@@ -1,6 +1,6 @@
-import { Button } from './../common/button/button.js';
-import { Profile } from './profile.js';
-import { profileTemplate } from './templates/profile-main.tmpl.js';
+import { Button } from './../common/button/button.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { Profile } from './profile.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { profileTemplate } from './templates/profile-main.tmpl.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
 const context = {
     name: 'Анатолий',
     email: 'mail@inbox.com',

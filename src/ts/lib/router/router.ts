@@ -1,19 +1,20 @@
-import { IBlock } from '../block.js';
-import { IRoute, Route } from './route.js'
-
+import { IBlock } from '../block';
+import { IRoute, Route } from './route';
 export interface IRouter {
-    go: (pathname: string, routs: IRoute[]) => void
+    go: (pathname: string) => void,
+    use: (pathname: string, block: IBlock) => {},
+    start: () => void
 }
 
 export class Router implements IRouter {
     __instance: any;
-    routes: IRoute[];
+    routes: any[];
     history: History;
     _currentRoute: IRoute|null|undefined;
     _rootQuery: string  
-
+    interval: number;
     
-    constructor(rootQuery: string) {
+    constructor(rootQuery: string, store: any) {
         if (this.__instance) {
             return this.__instance;
         }
@@ -22,48 +23,58 @@ export class Router implements IRouter {
         this.history = window.history;
         this._currentRoute = null;
         this._rootQuery = rootQuery;
+        this.__instance = this;
         this.routes = store;
+        this.listen();
     }
 
     use(pathname: string, block: IBlock) {
         const route: IRoute = new Route(pathname, block, {rootQuery: this._rootQuery});
-        this.routes.push(route);
-        console.log(route._block);
-        
-        route._block._saveHistory(this.routes);
+        this._setHistory(route);
         
         return this;
     }
 
     start() {
-      window.onpopstate = ((event: {currentTarget: {location: {pathname: string}}}) => {
-      this._onRoute(event.currentTarget.location.pathname);}).bind(this);
-
+        window.onpopstate = ((event: {currentTarget: {location: {pathname: string}}}) => {
+            this._onRoute(event.currentTarget.location.pathname);}).bind(this);
         this._onRoute(window.location.pathname);
     }
 
     _onRoute(pathname: string) {
-        console.log(this._currentRoute, window.location.pathname);
-        const route = this.getRoute(pathname);
-
         if (this._currentRoute) {
             this._currentRoute.leave();
         }
+        const route = this.getRoute(pathname);
 
-        route && route.render(route._block, pathname);
+        route && route.render(route._block);
     }
 
-    go(pathname: string, routs: IRoute[]) {
-        if (!this.routes.length) {
-            this.routes = routs;
-        }
-        this._currentRoute = this.getRoute(window.location.pathname); 
-        this.history.pushState({}, "", pathname);
+    go(pathname: string) {
+        this._currentRoute = this.getRoute(window.location.pathname);
+        
+        this.history.pushState({}, "page", pathname);
         this._onRoute(pathname);
+    }
+    _setHistory (route: IRoute) {
+        this.routes.push(route);
+    }
+
+    _getHistory (): IRoute[] {
+        return this.routes;
     }
 
     back() {
       window.history.back();
+    }
+
+    listen = () => {
+        clearInterval(this.interval);
+        this.interval = <any>setInterval(this._interval, 1000);
+    }
+
+    _interval = () => {
+        this._currentRoute = this.getRoute(window.location.pathname);
     }
 
     forward() {
@@ -71,7 +82,12 @@ export class Router implements IRouter {
     }
 
     getRoute(pathname: string) {
-
-        return this.routes.find(route => route.match(pathname));
+        let routes = this._getHistory();
+        pathname = pathname.replace(/\d+/gm, ':id');
+        console.log(pathname);
+        
+        if (routes) {
+            return routes.find(route => route.match(pathname));    
+        }
     }
 }

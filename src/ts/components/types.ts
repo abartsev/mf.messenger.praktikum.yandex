@@ -1,7 +1,6 @@
-export type IContext = {
+export type Context = {
     class_name?: string,
     title?: string,
-    for_each?: any[],
     link_href?: string,
     link_text?: string,
     btn_name?: string,

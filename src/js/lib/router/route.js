@@ -4,23 +4,21 @@ export class Route {
         this._pathname = pathname;
         this._block = view;
         this._props = props;
+        return this;
     }
     navigate(pathname) {
         if (this.match(pathname)) {
             this._pathname = pathname;
-            this.render(this._block, pathname);
+            this.render(this._block);
         }
     }
     leave() {
-        if (this._block) {
-            this._block.hide();
-        }
+        this._block.hide();
     }
     match(pathname) {
         return isEqual(pathname, this._pathname);
     }
-    render(block, pathname) {
-        console.log('route', block, pathname);
+    render(block) {
         block.show();
     }
 }

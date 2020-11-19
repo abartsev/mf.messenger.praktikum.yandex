@@ -4,13 +4,11 @@ const METHODS = {
     POST: 'POST',
     DELETE: 'DELETE'
 };
-function queryStringify(data) {
-    return Object.keys(data).reduce((a, e, i, arr) => a + `${e}=${data[e].toString()}${i + 1 < arr.length ? '&' : ''}`, '?');
-}
 export class HTTPTransport {
-    constructor() {
+    constructor(baseurl) {
         this.options = {
             data: null,
+            getParam: null,
             timeout: null,
             method: '',
             headers: {}
@@ -28,13 +26,14 @@ export class HTTPTransport {
             return this.request(url, Object.assign(Object.assign({}, options), { method: METHODS.DELETE }));
         };
         this.request = (url, options) => {
-            const { data, method, timeout } = options;
+            const { data, method, timeout, getParam } = options;
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                // if (method === METHODS.GET && data) {
-                //     url = `${url}${queryStringify(data)}`;
-                //  }
-                xhr.open(method, url);
+                if (method === METHODS.GET && getParam) {
+                    url = `${url}${this.queryStringify(getParam)}`;
+                }
+                method && xhr.open(method, `${this.baseurl}${url}`);
+                xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.onload = function () {
                     resolve(xhr);
                 };
@@ -48,10 +47,15 @@ export class HTTPTransport {
                     xhr.send();
                 }
                 else {
-                    xhr.send(data);
+                    console.log(data);
+                    xhr.send(JSON.stringify(data));
                 }
             });
         };
+        this.baseurl = baseurl;
+    }
+    queryStringify(data) {
+        return Object.keys(data).reduce((a, e, i, arr) => a + `${e}=${data[e].toString()}${i + 1 < arr.length ? '&' : ''}`, '?');
     }
 }
 //# sourceMappingURL=fetch.js.map

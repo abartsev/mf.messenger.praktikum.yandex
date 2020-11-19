@@ -1,75 +1,134 @@
-import { IContext } from '../components/types.js';
-import { TEMPLATE_REGEXP, FOR_TEMPLATE } from '../constants.js';
+import { Context } from '../components/types';
 
 export interface ITemplator {
-    _template: string,
-    compile: (ctx: IContext) => string
+    _template: any,
+    compile: (ctx: Ctx, props: Context) => HTMLElement
 }
 
+type Ctx = {[index:string]: string | object | [] | any};
 
 export class Templator implements ITemplator {
-    _template: string;
-    constructor(template: string) {
-      this._template = template;
+    _template: any;
+    _propsBlock: Context;
+    compile(template: Ctx, props: Context): HTMLElement {
+        this._propsBlock = props;
+        return this._compileTemplate(template);
     }
 
-    compile(ctx: IContext): string {
-      return this._compileTemplate(ctx);
+    _getChildren(children: Ctx[]): HTMLElement[] {
+        return children.map(e => this._compileTemplate(e))
     }
 
-    _compileTemplate(ctx: IContext) {
-        let key = null;
 
-        while ((key = TEMPLATE_REGEXP.exec(this._template))) {
-            if (key[1]) {
-                const tmplValue: string = key[1].trim();
-
-                if (tmplValue === 'for_each') {
-                    const data = this.get(ctx, tmplValue);
-                    
-                    let for_tmpl: string[] = this._template.split(FOR_TEMPLATE);
-
-                    for_tmpl[1] = data.reduce((a: string[], e: {[index: string]: string}): string[] => {
-                        let modForTmpl: string | Function = for_tmpl[1];
+    _getChildrenNode(props: any[] | {[index:string]: string | any[]}, blocks: any) {
+        if (Array.isArray(props)) {
+            return props.map(e => {
+                let block = blocks.render();
+                for (const key in e) {
+                    if (Object.prototype.hasOwnProperty.call(e, key)) {
+                        const value = e[key];
+                        if (Array.isArray(value)) {
+                            this._getChildrenNode(value, blocks)
+                            value.map(elem => {
+                                for (const field in elem) {
+                                    if (Object.prototype.hasOwnProperty.call(elem, key)) {
+                                        const value = elem[field];
+                                        block.props[field] = value;
+                                    }
+                                }
+                            })
+    
+                        } else {
+                            block.props[key] = value;
+                        }
                         
-                        for (const key in e) {
-                            if (Object.prototype.hasOwnProperty.call(e, key)) {
-                                const element: any = e[key];
-                                modForTmpl = modForTmpl.replace(new RegExp(`\{\{${key}\}\}`, "gi"), element);  
-                            }
-                        }               
-                        a.push(modForTmpl)
-                        return a;
-                    }, []).join('')
-                    this._template = for_tmpl.join('');                   
-                } else {   
-                    let data = this.get(ctx, tmplValue);
-
-                    if (typeof data === 'object') {
-                        let el = document.createElement('div');
-                        el.appendChild(data._element);
-                        data = el.innerHTML;
                     }
-                    
-                    this._template = this._template.replace(new RegExp(key[0], "gi"), data);
+                }
+                return block;
+            })
+        } else {
+           let arrBlock;
+            for (const key in props) {
+                if (Object.prototype.hasOwnProperty.call(props, key)) {
+                    const value = props[key];
+                    if (Array.isArray(value)) {
+                        this._getChildrenNode(value, blocks)
+                        arrBlock = value.map(elem => {
+                            let block = blocks.render();
+                            for (const field in elem) {
+                                if (Object.prototype.hasOwnProperty.call(elem, key)) {
+                                    const value = elem[field];
+                                    block.props[field] = value;
+                                }
+                            }
+                            return block;
+                        })
+                    } 
                 }
             }
+            return arrBlock || [];
         }
         
-        return this._template;
     }
-    get (obj: IContext | {}, path: string, defaultValue?: string) {
-        const keys = path.split('.');
-    
-        let result: any = obj;
-        for (let key of keys) {
-          result = result[key];
-    
-          if (result === undefined) {
-            return defaultValue;        
-          }
+
+    _compileTemplate(ctx: Ctx): HTMLElement {
+        let elementHtml: any = null;
+        let condition: boolean = true;
+        for (const key in ctx) {
+            if (Object.prototype.hasOwnProperty.call(ctx, key)) {
+                const element = ctx[key];
+                if (key === 'tag') {
+                    elementHtml = document.createElement(element);
+                } else if (key === 'class') {
+                    elementHtml.classList.add(...element.split(','));
+                } else if (key === 'text') {
+                    elementHtml.textContent = element;
+                } else if (key === 'options') {
+                    for (const type in element) {
+                        if (Object.prototype.hasOwnProperty.call(element, type)) {
+                            const val = element[type];
+                            elementHtml.setAttribute(type, val);
+                        }
+                    }
+                } else if (key === 'value') {
+                    element && elementHtml.setAttribute(key, this._propsBlock[element]);
+                } else if (key === 'attr') {
+                    for (const attrKey in element) {
+                        if (Object.prototype.hasOwnProperty.call(element, attrKey)) {
+                            const attrValue = element[attrKey];
+                            elementHtml.dataset[attrKey] = attrValue;
+                        }
+                    }
+                }  else if (key === 'children' && condition) {
+                    this._getChildren(element).map(e => {
+                        elementHtml.appendChild(e)
+                    })
+                } else if (key === 'childrenNode') {
+                    let arrBlock = this._getChildrenNode(this._propsBlock.childrenNode, element);
+                    arrBlock.map(block => {
+                        elementHtml.appendChild(block._element);  
+                    })
+                }  else if (key.includes('childNode') && condition) {
+                    elementHtml.appendChild(element._element);  
+                }   else if (key.includes('condition')) {
+                    if (Array.isArray(element)) {
+                        switch (element[1]) {
+                            case '>=':
+                                condition = element[0] >= element[2];
+                                break;
+                        
+                            case '===':
+                                condition = element[0] === element[2];
+                                break;
+                            default:
+                                break;
+                        }
+                    } 
+                }             
+            }
         }
-    
-        return result ?? defaultValue;
-    } 
+
+        return elementHtml;
+
+    }
 } 

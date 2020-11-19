@@ -1,5 +1,5 @@
-import { Chat } from './chat.js';
-import { chatMainTemplate } from './templates/chat-main.tmpl.js';
+import { Chat } from './chat.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
+import { chatMainTemplate } from './templates/chat-main.tmpl.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js.js';
 const context = {
     text: 'Выберите чат чтобы отправить сообщение'
 };
