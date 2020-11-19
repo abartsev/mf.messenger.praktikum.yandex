@@ -1,33 +1,42 @@
-import { Block, IBlock } from '../../lib/block.js';
-import { IContext } from '../interface.js';
+import { Block } from '../../lib/block';
+import { Link } from '../common/link/link';
+import { Router, IRouter } from '../../lib/router/router';
 
 export class ErrorPage extends Block {
-
-    props: IContext;
-    validateForm: {[index: string]: IBlock} = {};
-    temp: string;
-    _rootTag: string;
-    _root: HTMLElement;
-    constructor(tag:string, className: string[], props: IContext, template: string) {
-        super(tag, className, props, template);
-        this.temp = template;
+    _link: HTMLElement | null;
+    router: IRouter;
+    constructor(store: any) {
+        super({error: store.error});
+        this.router = new Router('.app', store.routers);
     }
 
     componentDidMount () {
-         
+        this._link = document.querySelector('[data-on-click]');
+        this._link?.addEventListener('click', this.handleClickLink);
     }
 
-    handleSubmit = (e: HTMLFormElement | any): void => {
-       
+    handleClickLink = () => {
+        this.router.go('/chat');
     }
-
 
     render() {
-        if (!this._root) {
-            this._root = document.querySelector('.main') as HTMLElement; 
-            this._root.appendChild(this.getContent());
-        }
+        return {
+            tag: 'div',
+            class: 'error__circle',
+            children: [
+                {
+                    tag: 'h3',
+                    class: 'error__block__title',
+                    text: this.props.error.title
 
-        return this._template;
+                },
+                {
+                    tag: 'p',
+                    class: 'error__block__text',
+                    text: this.props.error.description
+                }
+            ],
+            childNode: new Link({className: 'error__block__link', text: 'Назад к чатам', attr: {onClick: 'onClick'}})
+        };
     }
 }

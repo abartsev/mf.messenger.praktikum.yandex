@@ -1,10 +1,15 @@
 import { Block } from '../../lib/block.js';
 export class ValidateForm extends Block {
     constructor(props) {
-        super('span', ['error_msg'], props);
+        super(props);
+        return this;
     }
     render() {
-        return '{{text}}';
+        return {
+            tag: 'span',
+            class: 'error_msg',
+            text: this.props.text
+        };
     }
 }
 //# sourceMappingURL=validate-form.js.map
