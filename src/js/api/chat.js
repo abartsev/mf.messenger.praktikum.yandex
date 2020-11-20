@@ -1,7 +1,7 @@
 import { HTTPTransport } from '../lib/fetch/fetch.js';
 export class ChatApi {
     constructor() {
-        this.fetch = new HTTPTransport('https://ya-praktikum.tech/api/v2/chats/');
+        this.fetch = new HTTPTransport('chats/');
     }
     createChat(url, data) {
         return this.fetch.post(url, { data: data });

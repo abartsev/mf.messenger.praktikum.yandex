@@ -1,3 +1,4 @@
+import { Notification } from './../helper/notification';
 import { Button } from './../common/button/button';
 import { Link } from './../common/link/link';
 import { Block, IBlock } from '../../lib/block';
@@ -9,12 +10,13 @@ export class Signin extends Block {
     _link: HTMLElement | null;
     _btn: HTMLElement | null;
     _arrInputs: NodeList | any;
+    _interval: number = 3000;
     router: IRouter;
     validate: {[index: string]:IBlock};
     api: IAuth;
     changeStore: (path: string, data: any) => void;
     constructor (store: any, changeStore: (path: string, data: any) => void) {
-        super({first_name: '', second_name: '', login: '', email: '', password: '', phone: ''});
+        super({first_name: '', second_name: '', login: '', email: '', password: '', phone: '', text: ''});
         this.router = new Router('.app', store.routers);
         this.api = new Auth();
         this.changeStore = changeStore;
@@ -31,7 +33,13 @@ export class Signin extends Block {
             this.validate = {...this.validate, [e.name]: new ValidateForm({text: ''})};
             e?.addEventListener('blur', this.handleBlur);
             e?.addEventListener('input', this.handleChange);
-        })
+        });
+
+        if (this.props.text) {
+            setTimeout(() => {
+                this.props.text='';
+            }, this._interval)
+        }
     }
 
     handleClickLink = () => {
@@ -49,9 +57,17 @@ export class Signin extends Block {
     handleSubmit = (e: HTMLElement | any) => {
         e.preventDefault();
         let arrError: string[] = [];
-        for (const key in this.props) {
-            if (Object.prototype.hasOwnProperty.call(this.props, key)) {
-                const element = this.props[key];
+        let props: {[index: string]: string} = {
+            first_name: this.props.first_name, 
+            second_name: this.props.second_name,
+            login: this.props.login, 
+            email: this.props.email, 
+            password: this.props.password, 
+            phone: this.props.phone};
+
+        for (const key in props) {
+            if (Object.prototype.hasOwnProperty.call(props, key)) {
+                const element = props[key];
                 if (!element){
                     arrError.push(key);
                 }
@@ -66,15 +82,18 @@ export class Signin extends Block {
                }
             })
         } else {
-            let res: Promise<any> = this.api.post('signup', this.props);
-
-            res
-                .then(json => {
-                    if (json.response) {
-                        this.changeStore('profile', {...JSON.parse(json.response), ...this.props});
-                        this.router.go('/');
-                    }
-                })
+            this.api
+                .signUp('signup', props)
+                .then((json: any) => {
+                        if (json.status >= 300) {
+                            this.props.text = JSON.parse(json.response).reason;
+                        } else {
+                            this.router.go('#login');
+                        }
+                    })
+                .catch((er: string) => {
+                    this.props.text = er;
+                });
         }
     }
 
@@ -272,7 +291,9 @@ export class Signin extends Block {
                     ]
                 
                 }
-            ]
+            ],
+            condition_1: [this.props.text.length,'>',0],
+            childNode: new Notification(this.props.text)
         }
         
     }

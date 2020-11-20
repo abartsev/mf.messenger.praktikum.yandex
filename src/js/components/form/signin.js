@@ -1,3 +1,4 @@
+import { Notification } from './../helper/notification.js';
 import { Button } from './../common/button/button.js';
 import { Link } from './../common/link/link.js';
 import { Block } from '../../lib/block.js';
@@ -6,7 +7,8 @@ import { ValidateForm } from '../helper/validate-form.js';
 import { Auth } from '../../api/auth.js';
 export class Signin extends Block {
     constructor(store, changeStore) {
-        super({ first_name: '', second_name: '', login: '', email: '', password: '', phone: '' });
+        super({ first_name: '', second_name: '', login: '', email: '', password: '', phone: '', text: '' });
+        this._interval = 3000;
         this.handleClickLink = () => {
             this.router.go('/');
         };
@@ -19,9 +21,17 @@ export class Signin extends Block {
         this.handleSubmit = (e) => {
             e.preventDefault();
             let arrError = [];
-            for (const key in this.props) {
-                if (Object.prototype.hasOwnProperty.call(this.props, key)) {
-                    const element = this.props[key];
+            let props = {
+                first_name: this.props.first_name,
+                second_name: this.props.second_name,
+                login: this.props.login,
+                email: this.props.email,
+                password: this.props.password,
+                phone: this.props.phone
+            };
+            for (const key in props) {
+                if (Object.prototype.hasOwnProperty.call(props, key)) {
+                    const element = props[key];
                     if (!element) {
                         arrError.push(key);
                     }
@@ -36,13 +46,18 @@ export class Signin extends Block {
                 });
             }
             else {
-                let res = this.api.post('signup', this.props);
-                res
-                    .then(json => {
-                    if (json.response) {
-                        this.changeStore('profile', Object.assign(Object.assign({}, JSON.parse(json.response)), this.props));
-                        this.router.go('/');
+                this.api
+                    .post('signin', props)
+                    .then((json) => {
+                    if (json.status >= 300) {
+                        this.props.text = JSON.parse(json.response).reason;
                     }
+                    else {
+                        this.router.go('#login');
+                    }
+                })
+                    .catch((er) => {
+                    this.props.text = er;
                 });
             }
         };
@@ -69,6 +84,11 @@ export class Signin extends Block {
             e === null || e === void 0 ? void 0 : e.addEventListener('blur', this.handleBlur);
             e === null || e === void 0 ? void 0 : e.addEventListener('input', this.handleChange);
         });
+        if (this.props.text) {
+            setTimeout(() => {
+                this.props.text = '';
+            }, this._interval);
+        }
     }
     render() {
         return {
@@ -252,7 +272,9 @@ export class Signin extends Block {
                         }
                     ]
                 }
-            ]
+            ],
+            condition_1: [this.props.text.length, '>', 0],
+            childNode: new Notification(this.props.text)
         };
     }
 }

@@ -62,14 +62,14 @@ class App {
     }
 
     render () {
-        this._router.use('/', this.login);
-        this._router.use('/chat', this.chat);
-        this._router.use('/chat/:id/', this.chatId);
-        this._router.use('/signin', this.signin);
+        this._router.use('#login', this.login);
+        this._router.use('#chat', this.chat);
+        this._router.use('#chat/:id/', this.chatId);
+        this._router.use('#signin', this.signin);
         
-        this._router.use('/profile', this.profile);
-        this._router.use('/profile-edit', this.profile_edit);
-        this._router.use('/error', this.error_page);
+        this._router.use('#profile', this.profile);
+        this._router.use('#profile-edit', this.profile_edit);
+        this._router.use('#error', this.error_page);
         this._router.start();
     }
 }

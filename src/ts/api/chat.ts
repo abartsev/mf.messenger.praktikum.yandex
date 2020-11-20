@@ -1,21 +1,23 @@
 import { HTTPTransport, IHTTPTransport } from '../lib/fetch/fetch';
+import { Data } from '../lib/fetch/types';
 
 export interface IChatApi {
-    createChat: (url: string, data: {[index: string]: string | {[index: string]: string} | []})=>any,
-    addUsersToChat: (url: string, data: {[index: string]: string | {[index: string]: string} | []})=>any
+    createChat: (url: string, data: Data)=>any,
+    addUsersToChat: (url: string, data: Data)=>any
 }
 
 export class ChatApi {
 
     fetch: IHTTPTransport;
     constructor () {
-        this.fetch = new HTTPTransport('https://ya-praktikum.tech/api/v2/chats/');
+        this.fetch = new HTTPTransport('chats/');
     }
 
-    createChat(url: string, data: {[index: string]: string}) {
+    createChat(url: string, data: Data) {
         return this.fetch.post(url, {data: data});
     }
-    addUsersToChat(url: string, data: {[index: string]: string | []}) {
+
+    addUsersToChat(url: string, data: Data) {
         return this.fetch.put(url, {data: data});
     }
 }

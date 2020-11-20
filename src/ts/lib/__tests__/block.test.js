@@ -13,17 +13,15 @@ jest.mock('../event-bus', () => {
 
 describe('tests Block', () => {
     const props = {test: '1'};
-    let block = new Block(props);
 
     test('should add _props', () => {
+        let block = new Block(props);
         expect(block.props.test).toBe('1');
-        expect(block.eventBus.on).toBeCalled();
     });
 
     test('should componentDidUpdate', () => {
+        let block = new Block(props);
         let test = block.componentDidUpdate({test: 1}, {test: 1});
-        expect(test).toBeFalsy();
+        expect(test).toBeTruthy();
     })
-    
-
 })

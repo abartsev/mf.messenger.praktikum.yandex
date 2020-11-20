@@ -1,3 +1,4 @@
+import { Notification } from './../helper/notification';
 import { Button } from './../common/button/button';
 import { Link } from './../common/link/link';
 import { Block, IBlock } from '../../lib/block';
@@ -9,11 +10,12 @@ export class Login extends Block {
     _link: HTMLElement | null;
     _btn: HTMLElement | null;
     _arrInputs: NodeList | any;
+    _interval: number = 3000;
     router: IRouter;
     validate: {[index: string]:IBlock};
     api: IAuth;
     constructor (store: any) {
-        super({login: '', password: ''});
+        super({login: '', password: '', text: ''});
         this.router = new Router('.app', store.routers);
         this.api = new Auth();
     }
@@ -29,7 +31,13 @@ export class Login extends Block {
             this.validate = {...this.validate, [e.name]: new ValidateForm({text: ''})};
             e?.addEventListener('blur', this.handleBlur);
             e?.addEventListener('input', this.handleChange);
-        })
+        });
+
+        if (this.props.text) {
+            setTimeout(() => {
+                this.props.text='';
+            }, this._interval)
+        }
     }
 
     handleClickLink = () => {
@@ -47,15 +55,16 @@ export class Login extends Block {
     handleSubmit = (e: HTMLElement | any) => {
         e.preventDefault();
         let arrError: string[] = [];
-        for (const key in this.props) {
-            if (Object.prototype.hasOwnProperty.call(this.props, key)) {
-                const element = this.props[key];
+        let props: {[index: string]: string} = {login: this.props.login, password: this.props.password}
+        for (const key in props) {
+            if (Object.prototype.hasOwnProperty.call(props, key)) {
+                const element = props[key];
                 if (!element){
                     arrError.push(key);
                 }
             }
         }
-
+        
         if (arrError.length) {
             Array.from(this._arrInputs).map((e: HTMLInputElement | any) => {
                if (arrError.includes(e.name)) {
@@ -64,15 +73,18 @@ export class Login extends Block {
                }
             })
         } else {
-            let resp: Promise<any> = this.api.post('signin', this.props);
-            resp
-                .then(json => {
-                    console.log(json);
-                    
-                    if (json.response) {
-                        this.router.go('/chat');
-                    }
-                })
+            this.api
+                .signIn('signin', props)
+                .then((json: any) => {
+                        if (json.status >= 300) {
+                            this.props.text = JSON.parse(json.response).reason;
+                        } else {
+                            this.router.go('#chat');
+                        }
+                    })
+                .catch((er: string) => {
+                    this.props.text = er;
+                })   
         }
 
     }
@@ -179,7 +191,9 @@ export class Login extends Block {
                     ]
                 
                 }
-            ]
+            ],
+            condition_1: [this.props.text.length,'>',0],
+            childNode: new Notification(this.props.text)
         }
         
     }

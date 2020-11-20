@@ -1,3 +1,4 @@
+import { Notification } from './../helper/notification.js';
 import { Button } from './../common/button/button.js';
 import { Link } from './../common/link/link.js';
 import { Block } from '../../lib/block.js';
@@ -6,7 +7,8 @@ import { ValidateForm } from '../helper/validate-form.js';
 import { Auth } from '../../api/auth.js';
 export class Login extends Block {
     constructor(store) {
-        super({ login: '', password: '' });
+        super({ login: '', password: '', text: '' });
+        this._interval = 3000;
         this.handleClickLink = () => {
             this.router.go('/signin');
         };
@@ -19,9 +21,10 @@ export class Login extends Block {
         this.handleSubmit = (e) => {
             e.preventDefault();
             let arrError = [];
-            for (const key in this.props) {
-                if (Object.prototype.hasOwnProperty.call(this.props, key)) {
-                    const element = this.props[key];
+            let props = { login: this.props.login, password: this.props.password };
+            for (const key in props) {
+                if (Object.prototype.hasOwnProperty.call(props, key)) {
+                    const element = props[key];
                     if (!element) {
                         arrError.push(key);
                     }
@@ -36,13 +39,18 @@ export class Login extends Block {
                 });
             }
             else {
-                let resp = this.api.post('signin', this.props);
-                resp
-                    .then(json => {
-                    console.log(json);
-                    if (json.response) {
-                        this.router.go('/chat');
+                this.api
+                    .post('signin', props)
+                    .then((json) => {
+                    if (json.status >= 300) {
+                        this.props.text = JSON.parse(json.response).reason;
                     }
+                    else {
+                        this.router.go('#chat');
+                    }
+                })
+                    .catch((er) => {
+                    this.props.text = er;
                 });
             }
         };
@@ -68,6 +76,11 @@ export class Login extends Block {
             e === null || e === void 0 ? void 0 : e.addEventListener('blur', this.handleBlur);
             e === null || e === void 0 ? void 0 : e.addEventListener('input', this.handleChange);
         });
+        if (this.props.text) {
+            setTimeout(() => {
+                this.props.text = '';
+            }, this._interval);
+        }
     }
     render() {
         return {
@@ -159,7 +172,9 @@ export class Login extends Block {
                         }
                     ]
                 }
-            ]
+            ],
+            condition_1: [this.props.text.length, '>', 0],
+            childNode: new Notification(this.props.text)
         };
     }
 }

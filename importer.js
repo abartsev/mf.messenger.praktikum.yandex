@@ -10,10 +10,10 @@ const files = FileHound.create()
 files.then((filePaths) => {
   filePaths.forEach((filepath) => {
     fs.readFile(filepath, 'utf8', (err, data) => {
-      if (!data.match(/import .* from/g)) {
-        return
+      if (!(data.match(/import .* from/g))) {
+        return;
       }
-      let newData = data.replace(/(import .* from\s+['"])(.*)(?=['"])/g, '$1$2.js')
+      let newData = data.replace(/(import .* from\s+['"])(.*)(?=['"])/g, '$1$2.js');
       if (err) throw err;
       fs.writeFile(filepath, newData, function (err) {
         if (err) {

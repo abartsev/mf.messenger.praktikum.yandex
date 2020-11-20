@@ -1,17 +1,23 @@
 import { HTTPTransport, IHTTPTransport } from '../lib/fetch/fetch';
+import { Data } from '../lib/fetch/types';
 
 export interface IAuth {
-    post: (url: string, data: {[index: string]: string | {[index: string]: string}})=>any
+    signIn: (url: string, data: Data)=>any,
+    signUp: (url: string, data: Data)=>any
 }
 
 export class Auth {
 
     fetch: IHTTPTransport;
     constructor () {
-        this.fetch = new HTTPTransport('https://ya-praktikum.tech/api/v2/auth/');
+        this.fetch = new HTTPTransport('auth/');
     }
 
-    post(url: string, data: {[index: string]: string}) {
+    signIn(url: string, data: Data) {
+        return this.fetch.post(url, {data: data});
+    }
+
+    signUp(url: string, data: Data) {
         return this.fetch.post(url, {data: data});
     }
 }
