@@ -1,9 +1,11 @@
-const METHODS = {
-    GET: 'GET',
-    PUT: 'PUT',
-    POST: 'POST',
-    DELETE: 'DELETE'
-};
+var METHODS;
+(function (METHODS) {
+    METHODS["GET"] = "GET";
+    METHODS["PUT"] = "PUT";
+    METHODS["POST"] = "POST";
+    METHODS["DELETE"] = "DELETE";
+})(METHODS || (METHODS = {}));
+;
 export class HTTPTransport {
     constructor(baseurl) {
         this.options = {
@@ -13,6 +15,7 @@ export class HTTPTransport {
             method: '',
             headers: {}
         };
+        this._baseUrl = 'https://ya-praktikum.tech/api/v2/';
         this.get = (url, options = {}) => {
             return this.request(url, Object.assign(Object.assign({}, options), { method: METHODS.GET }));
         };
@@ -32,8 +35,9 @@ export class HTTPTransport {
                 if (method === METHODS.GET && getParam) {
                     url = `${url}${this.queryStringify(getParam)}`;
                 }
-                method && xhr.open(method, `${this.baseurl}${url}`);
+                method && xhr.open(method, `${this.getBaseurl}${url}`);
                 xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.withCredentials = true;
                 xhr.onload = function () {
                     resolve(xhr);
                 };
@@ -47,12 +51,14 @@ export class HTTPTransport {
                     xhr.send();
                 }
                 else {
-                    console.log(data);
                     xhr.send(JSON.stringify(data));
                 }
             });
         };
-        this.baseurl = baseurl;
+        this.url = baseurl;
+    }
+    get getBaseurl() {
+        return `${this._baseUrl}${this.url}`;
     }
     queryStringify(data) {
         return Object.keys(data).reduce((a, e, i, arr) => a + `${e}=${data[e].toString()}${i + 1 < arr.length ? '&' : ''}`, '?');

@@ -1,3 +1,4 @@
+import { Notification } from './../helper/notification';
 import { Block } from '../../lib/block';
 import { ChatAside } from './chat-aside/chat-aside';
 import { ChatMsgs } from './chat-body/chat-main-select-msg';
@@ -15,7 +16,7 @@ export class Chat extends Block {
     changeStore: (path: string, data: any, action: string) => void;
 
     constructor(store: any, changeStore: (path: string, data: any, action: string) => void) {
-        super({chat: store.chat});
+        super({chat: store.chat, text: ''});
         this.router = new Router('.app', store.routers);
         this.changeStore = changeStore;
     }
@@ -33,10 +34,30 @@ export class Chat extends Block {
     }
 
     handleCreateChat = () => {
-        let resp = this.chatApi.createChat('', {title: 'number1'});
-
-        console.log(resp);
-        this.changeStore('chat', {}, 'CHANGECHAT');
+        let id: string | null = null;
+        this.chatApi
+            .createChat('', {title: 'number1'})
+            .then((response: any) => {
+                if (response.status >= 300) {
+                    this.props.text = JSON.parse(response.response).reason;
+                } else {
+                    id = JSON.parse(response.response).id;
+                    this.chatApi
+                        .addUsersToChat('users', {users: [60],chatId: id!})
+                        .then((res: any) => {
+                            if (res.status >= 300) {
+                                this.props.text = JSON.parse(res.response).reason;
+                            } else {
+                                this.changeStore('chat', {id, title: 'number1'}, 'CHANGECHAT');    
+                            }
+                            
+                        })
+                }
+                
+            })
+            .catch((er: string) => {
+                this.props.text = er;
+            })
     }
 
     render() {
@@ -59,7 +80,9 @@ export class Chat extends Block {
                         text: 'Выберите чат чтобы отправить сообщение'
                     }
                 ]
-            }]
+            }],
+            condition_1: [this.props.text.length,'>',0],
+            childNode: new Notification(this.props.text)
             
         };
     }

@@ -16,27 +16,34 @@ export class ErrorPage extends Block {
     }
 
     handleClickLink = () => {
-        this.router.go('/chat');
+        this.router.go('#chat');
     }
 
     render() {
         return {
             tag: 'div',
-            class: 'error__circle',
+            class: 'error__block',
             children: [
                 {
-                    tag: 'h3',
-                    class: 'error__block__title',
-                    text: this.props.error.title
+                    tag: 'div',
+                    class: 'error__circle',
+                    children: [
+                        {
+                            tag: 'h3',
+                            class: 'error__block__title',
+                            text: this.props.error.title
 
-                },
-                {
-                    tag: 'p',
-                    class: 'error__block__text',
-                    text: this.props.error.description
+                        },
+                        {
+                            tag: 'p',
+                            class: 'error__block__text',
+                            text: this.props.error.description
+                        }
+                    ],
+                    childNode: new Link({className: 'error__block__link', text: 'Назад к чатам', attr: {onClick: 'onClick'}})
                 }
-            ],
-            childNode: new Link({className: 'error__block__link', text: 'Назад к чатам', attr: {onClick: 'onClick'}})
+            ]
+            
         };
     }
 }
