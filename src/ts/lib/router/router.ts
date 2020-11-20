@@ -1,8 +1,8 @@
 import { IBlock } from '../block';
 import { IRoute, Route } from './route';
 export interface IRouter {
-    go: (pathname: string) => void,
-    use: (pathname: string, block: IBlock) => {},
+    go: (hash: string) => void,
+    use: (hash: string, block: IBlock) => {},
     start: () => void
 }
 
@@ -28,33 +28,33 @@ export class Router implements IRouter {
         this.listen();
     }
 
-    use(pathname: string, block: IBlock) {
-        const route: IRoute = new Route(pathname, block, {rootQuery: this._rootQuery});
+    use(hash: string, block: IBlock) {
+        const route: IRoute = new Route(hash, block, {rootQuery: this._rootQuery});
         this._setHistory(route);
         
         return this;
     }
 
     start() {
-        window.onpopstate = ((event: {currentTarget: {location: {pathname: string}}}) => {
-            this._onRoute(event.currentTarget.location.pathname);}).bind(this);
-        this._onRoute(window.location.pathname);
+        window.onpopstate = ((event: {currentTarget: {location: {hash: string}}}) => {
+            this._onRoute(event.currentTarget.location.hash);}).bind(this);
+        this._onRoute(window.location.hash);
     }
 
-    _onRoute(pathname: string) {
+    _onRoute(hash: string) {
         if (this._currentRoute) {
             this._currentRoute.leave();
         }
-        const route = this.getRoute(pathname);
+        const route = this.getRoute(hash);
 
         route && route.render(route._block);
     }
 
-    go(pathname: string) {
-        this._currentRoute = this.getRoute(window.location.pathname);
+    go(hash: string) {
+        this._currentRoute = this.getRoute(window.location.hash);
         
-        this.history.pushState({}, "page", pathname);
-        this._onRoute(pathname);
+        this.history.pushState({}, "page", hash);
+        this._onRoute(hash);
     }
     _setHistory (route: IRoute) {
         this.routes.push(route);
@@ -74,20 +74,23 @@ export class Router implements IRouter {
     }
 
     _interval = () => {
-        this._currentRoute = this.getRoute(window.location.pathname);
+        this._currentRoute = this.getRoute(window.location.hash);
+
+        if (!this._currentRoute) {
+           this.go('#error'); 
+        } 
     }
 
     forward() {
       window.history.forward();
     }
 
-    getRoute(pathname: string) {
+    getRoute(hash: string) {
         let routes = this._getHistory();
-        pathname = pathname.replace(/\d+/gm, ':id');
-        console.log(pathname);
-        
+        hash = hash.replace(/\d+/gm, ':id');
+
         if (routes) {
-            return routes.find(route => route.match(pathname));    
+            return routes.find(route => route.match(hash));    
         }
     }
 }

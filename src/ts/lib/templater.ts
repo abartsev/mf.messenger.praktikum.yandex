@@ -120,6 +120,9 @@ export class Templator implements ITemplator {
                             case '===':
                                 condition = element[0] === element[2];
                                 break;
+                            case '>':
+                                condition = element[0] > element[2];
+                                break;
                             default:
                                 break;
                         }

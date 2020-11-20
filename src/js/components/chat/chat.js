@@ -1,3 +1,4 @@
+import { Notification } from './../helper/notification.js';
 import { Block } from '../../lib/block.js';
 import { ChatAside } from './chat-aside/chat-aside.js';
 import { ChatMsgs } from './chat-body/chat-main-select-msg.js';
@@ -7,14 +8,35 @@ import { Router } from '../../lib/router/router.js';
 import { ChatApi } from '../../api/chat.js';
 export class Chat extends Block {
     constructor(store, changeStore) {
-        super({ chat: store.chat });
+        super({ chat: store.chat, text: '' });
         this.handleClickLink = () => {
             this.router.go('/profile');
         };
         this.handleCreateChat = () => {
-            let resp = this.chatApi.createChat('', { title: 'number1' });
-            console.log(resp);
-            this.changeStore('chat', {}, 'CHANGECHAT');
+            let id = null;
+            this.chatApi
+                .createChat('', { title: 'number1' })
+                .then((response) => {
+                if (response.status >= 300) {
+                    this.props.text = JSON.parse(response.response).reason;
+                }
+                else {
+                    id = JSON.parse(response.response).id;
+                    this.chatApi
+                        .addUsersToChat('users', { users: [60], chatId: id })
+                        .then((res) => {
+                        if (res.status >= 300) {
+                            this.props.text = JSON.parse(res.response).reason;
+                        }
+                        else {
+                            this.changeStore('chat', { id, title: 'number1' }, 'CHANGECHAT');
+                        }
+                    });
+                }
+            })
+                .catch((er) => {
+                this.props.text = er;
+            });
         };
         this.router = new Router('.app', store.routers);
         this.changeStore = changeStore;
@@ -47,7 +69,9 @@ export class Chat extends Block {
                             text: 'Выберите чат чтобы отправить сообщение'
                         }
                     ]
-                }]
+                }],
+            condition_1: [this.props.text.length, '>', 0],
+            childNode: new Notification(this.props.text)
         };
     }
 }

@@ -20,9 +20,20 @@ h1,h2,h3,h4,h5,h6 {
 }
 a {
     text-decoration: none;
+    cursor: pointer;
 }
 ul {
     list-style: none;
+}
+
+.block__notification {
+    position: fixed;
+    top: 20px;
+    right: 10px;
+    background: #c2ffe1;
+    padding: 20px 10px;
+    border-radius: 10px;
+    border: 1px solid #848484;
 }
 
 .error_msg {
