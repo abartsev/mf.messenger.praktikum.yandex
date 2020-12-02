@@ -22,7 +22,7 @@ export class HTTPTransport {
         method: '',
         headers: {}
     }
-    _baseUrl: string = 'https://ya-praktikum.tech/api/v2/';
+    private _baseUrl: string = 'https://ya-praktikum.tech/api/v2/';
     url: string;
     constructor (baseurl: string) {
         this.url = baseurl;
