@@ -13,3 +13,4 @@ npm run eslint - запуск eslint
   1: webpack
   2: docker
   3: Websocket не до конца
+  4: eslint
