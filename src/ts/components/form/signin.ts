@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-multi-assign */
 import {Notification} from './../helper/notification';
 import {Button} from './../common/button/button';
 import {Link} from './../common/link/link';
@@ -58,8 +60,8 @@ export class Signin extends Block {
     	e.preventDefault();
     	let arrError: string[] = [];
     	let props: {[index: string]: string} = {
-    		firstName: this.props.firstName,
-    		secondName: this.props.secondName,
+    		first_name: this.props.firstName,
+    		second_name: this.props.secondName,
     		login: this.props.login,
     		email: this.props.email,
     		password: this.props.password,
@@ -102,6 +104,14 @@ export class Signin extends Block {
     		this.validate[e.target.name]._element.remove();
     		this.validate[e.target.name].props.text = '';
     	}
+
+    	setTimeout(() => {
+    		const element = document.querySelector(`[name="${e.target.name}"]`) as HTMLInputElement;
+    		if (element) {
+    			element.focus();
+    			element.selectionStart = element.selectionEnd = element.value.length;
+    		}
+    	}, 0);
 
     	this.props[e.target.name] = e.target.value;
     }

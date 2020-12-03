@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-assign */
 import {Notification} from './../helper/notification';
 import {Button} from './../common/button/button';
 import {Link} from './../common/link/link';
@@ -42,7 +43,7 @@ export class Login extends Block {
     }
 
     handleClickLink = () => {
-    	this.router.go('/signin');
+    	this.router.go('#signin');
     }
 
     handleBlur = (e: HTMLElement | any): void => {
@@ -94,6 +95,13 @@ export class Login extends Block {
     		this.validate[e.target.name].props.text = '';
     	}
 
+    	setTimeout(() => {
+    		const element = document.querySelector(`[name="${e.target.name}"]`) as HTMLInputElement;
+    		if (element) {
+    			element.focus();
+    			element.selectionStart = element.selectionEnd = element.value.length;
+    		}
+    	}, 0);
     	this.props[e.target.name] = e.target.value;
     }
 

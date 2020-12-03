@@ -49,6 +49,10 @@ module.exports = {
 				use: ['file-loader']
 			},
 			{
+				test: /\.(ttf|woff|woff2)$/,
+				use: ['file-loader']
+			},
+			{
 				test: /\.ts$/,
 				exclude: /(node_modules)/,
 				use: [

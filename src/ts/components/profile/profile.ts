@@ -1,5 +1,6 @@
 import {Block} from '../../lib/block';
 import {Button} from '../common/button/button';
+import {Auth, IAuth} from '../../api/auth';
 import {Router, IRouter} from '../../lib/router/router';
 import './profile.css';
 
@@ -8,9 +9,11 @@ export class Profile extends Block {
     _linkChange: HTMLElement | null;
     _linkExit: HTMLElement | null;
     router: IRouter;
+    api: IAuth;
     constructor(store: any) {
     	super({profile: store.profile});
     	this.router = new Router('.app', store.routers);
+    	this.api = new Auth();
     }
 
     componentDidMount() {
@@ -23,15 +26,21 @@ export class Profile extends Block {
     }
 
     handleClickBack = () => {
-    	this.router.go('/chat');
+    	this.router.go('#chat');
     }
 
     handleClickChange = () => {
-    	this.router.go('/profile-edit');
+    	this.router.go('#profile-edit');
     }
 
     handleClickExit = () => {
-    	this.router.go('/chat');
+    	this.api
+    		.logout()
+    		.then((res: any) => {
+    			if (res.response === 'OK') {
+    				this.router.go('#login');
+    			}
+    		});
     }
 
     render() {

@@ -3,6 +3,7 @@ import {IBlock} from '../lib/block';
 import {Login} from '../components/form/login';
 import {Signin} from '../components/form/signin';
 import {Chat} from '../components/chat/chat';
+import {Chats} from '../components/chat/chats';
 import {Profile} from '../components/profile/profile';
 import {ProfileEdit} from '../components/profile/profile-edit';
 import {ErrorPage} from '../components/error-page/error-page';
@@ -45,7 +46,7 @@ class App {
     	this.login = new Login(this.initialStore);
     	this.signin = new Signin(this.initialStore, this.changeStoreProfile);
     	this.chat = this.store.on('CHANGECHAT', new Chat(this.initialStore, this.changeStoreChat), 'chat');
-    	this.chatId = this.store.on('CHANGECHAT', new Chat(this.initialStore, this.changeStoreChat), 'chat');
+    	this.chatId = this.store.on('CHANGECHAT', new Chats(this.initialStore, this.changeStoreChat), 'chat');
     	this.profile = new Profile(this.initialStore);
     	this.profileEdit = new ProfileEdit(this.initialStore);
     	this.errorPage = new ErrorPage(this.initialStore);
