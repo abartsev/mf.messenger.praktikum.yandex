@@ -12,5 +12,9 @@ npm run eslint - запуск eslint
 1: Есть недоработки отправляю на просмотр так как очень мало времени(
   1: webpack
   2: docker
-  3: Websocket не до конца
+  3: Websocket не до конца постоянно получаю ошибку не волидный токен
   4: eslint
+  5: heroku падает с ошибкой но немогу понять почему
+
+
+heroku https://lit-brushlands-99889.herokuapp.com/#login
