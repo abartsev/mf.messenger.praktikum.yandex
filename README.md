@@ -1,5 +1,6 @@
 - «[прототипы](https://www.figma.com/file/HjDvRLc8AomHvgEOU9Jv28/chat_abartsev?node-id=5%3A22)»,
 - «[сайт](https://cocky-lumiere-067fff.netlify.app)»,
+- «[heroku](https://lit-brushlands-99889.herokuapp.com/#login)»,
 
 Команды
 
@@ -14,7 +15,4 @@ npm run eslint - запуск eslint
   2: docker
   3: Websocket не до конца постоянно получаю ошибку не волидный токен
   4: eslint
-  5: heroku падает с ошибкой но немогу понять почему
-
-
-heroku https://lit-brushlands-99889.herokuapp.com/#login
+  5: heroku сделал
