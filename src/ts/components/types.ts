@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export type Context = {
     class_name?: string,
     title?: string,
@@ -7,4 +8,4 @@ export type Context = {
     value?: string,
     [index: string]: any,
     handlers?: any[]
-}
+};
